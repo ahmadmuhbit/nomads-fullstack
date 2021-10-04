@@ -25,39 +25,32 @@
                 <div class="row">
                     <div class="col-lg-8 pl-lg-0">
                         <div class="card card-details">
-                            <h1>Nusa Peninda</h1>
-                            <p>Republic of Indonesia Raya</p>
-                            <div class="gallery">
+                            <h1>{{ $item->title }}</h1>
+                            <p>{{ $item->location }}</p>
+                            @if ($item->galleries->count())
+                                <div class="gallery">
                                 <div class="xzoom-container">
-                                    <img src="{{ url('frontend/images/details.jpg') }}" class="xzoom" id="xzoom-default" xoriginal="{{ url('frontend/images/details.jpg') }}">
+                                    <img src="{{ Storage::url($item->galleries->first()->image) }}" class="xzoom" id="xzoom-default" xoriginal="{{ Storage::url($item->galleries->first()->image) }}">
                                 </div>
                                 <div class="xzoom-thumbs">
-                                    <a href="{{ url('frontend/images/details.jpg') }}">
-                                        <img src="{{ url('frontend/images/details-thumb-1.jpg') }}" class="xzoom-gallery" width="128" xpreview="{{ url('frontend/images/details.jpg') }}">
-                                    </a>
-                                    <a href="{{ url('frontend/images/details.jpg') }}">
-                                        <img src="{{ url('frontend/images/details-thumb-2.jpg') }}" class="xzoom-gallery" width="128" xpreview="{{ url('frontend/images/details.jpg') }}">
-                                    </a>
-                                    <a href="{{ url('frontend/images/details.jpg') }}">
-                                        <img src="{{ url('frontend/images/details-thumb-3.jpg') }}" class="xzoom-gallery" width="128" xpreview="{{ url('frontend/images/details.jpg') }}">
-                                    </a>
-                                    <a href="{{ url('frontend/images/details.jpg') }}">
-                                        <img src="{{ url('frontend/images/details-thumb-4.jpg') }}" class="xzoom-gallery" width="128" xpreview="{{ url('frontend/images/details.jpg') }}">
-                                    </a>
-                                    <a href="{{ url('frontend/images/details.jpg') }}">
-                                        <img src="{{ 'frontend/images/details-thumb-5.jpg' }}" class="xzoom-gallery" width="128" xpreview="{{ url('frontend/images/details.jpg') }}">
-                                    </a>
+                                    @foreach ($item->galleries as $gallery)
+                                        <a href="{{ Storage::url($gallery->image) }}">
+                                            <img src="{{ Storage::url($gallery->image) }}" class="xzoom-gallery" width="128" xpreview="{{ Storage::url($gallery->image) }}">
+                                        </a>
+                                    @endforeach
                                 </div>
                             </div>
+                            @endif
                             <h2>Tentang Wisata</h2>
-                            <p>Nusa Penida is an island southeast of Indonesia’s island Bali and a district of Klungkung Regency that includes the neighbouring small island of Nusa Lembongan. The Badung Strait separates the island and Bali. The interior of Nusa Penida is hilly with a maximum altitude of 524 metres. It is drier than the nearby island of Bali.</p>
-                            <p>Bali and a district of Klungkung Regency that includes the neighbouring small island of Nusa Lembongan. The Badung Strait separates the island and Bali.</p>
+                            <p>
+                               {!! $item->about !!}
+                            </p>
                             <div class="features row">
                                 <div class="col-md-4">
                                     <img src="{{ url('frontend/images/ic_event.png') }}" alt="" class="features-image">
                                     <div class="description">
                                         <h3>Featured Event</h3>
-                                        <p>Tari Kecak</p>
+                                        <p>{{ $item->featured_event }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-4 border-left">
@@ -65,7 +58,7 @@
                                         <img src="{{ url('frontend/images/ic_language.png') }}" alt="" class="features-image">
                                         <div class="description">
                                             <h3>Language</h3>
-                                            <p>Bahasa Indonesia</p>
+                                            <p>{{ $item->language }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -74,7 +67,7 @@
                                         <img src="{{ url('frontend/images/ic_foods.png') }}" alt="" class="features-image">
                                         <div class="description">
                                             <h3>Foods</h3>
-                                            <p>Local Foods</p>
+                                            <p>{{ $item->foods }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -96,24 +89,35 @@
                             <table class="trip-informations">
                                 <tr>
                                     <th width="50%">Date of Departure</th>
-                                    <td width="50%">22 Aug, 2019</td>
+                                    <td width="50%">{{ \Carbon\Carbon::create($item->date_of_departure)->format('F n, Y') }}</td>
                                 </tr>
                                 <tr>
                                     <th width="50%">Duration</th>
-                                    <td width="50%">4D 3N</td>
+                                    <td width="50%">{{ $item->duration }}</td>
                                 </tr>
                                 <tr>
                                     <th width="50%">Type</th>
-                                    <td width="50%">Open Trip</td>
+                                    <td width="50%">{{ $item->type }}</td>
                                 </tr>
                                 <tr>
                                     <th width="50%">Price</th>
-                                    <td width="50%">$80,00 / person</td>
+                                    <td width="50%">${{ $item->price }},00 / person</td>
                                 </tr>
                             </table>
                         </div>
                         <div class="join-container">
-                            <a href="{{ url('checkout') }}" class="btn btn-block btn-join-now mt-3 py-2">Join Now</a>
+                            @auth
+                                <form action="" method="post">
+                                    <button class="btn btn-block btn-join-now mt-3 py-2" type="submit">
+                                        Join Now
+                                    </button>
+                                </form>
+                            @endauth
+                            @guest
+                                <a href="{{ route('login') }}" class="btn btn-block btn-join-now mt-3 py-2">
+                                    Login or Register to Join
+                                </a>
+                            @endguest
                         </div>
                     </div>
                 </div>
